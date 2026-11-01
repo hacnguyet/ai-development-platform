@@ -1,64 +1,254 @@
 :root {
-  font-family: system-ui, sans-serif;
-  color: #172033;
-  background: #f3f5fa;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:#f3f7ec;
+  background:#142f38;
+  font-synthesis:none;
+  color-scheme:dark
+}
+
+
+* {
+  box-sizing:border-box
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  display: grid;
-  grid-template-rows: auto 1fr;
+  margin:0;
+  min-height:100svh;
+  display:grid;
+  place-items:center;
+  background:radial-gradient(ellipse at top,#29505a,#10272e 75%)
+}
+
+
+.game-shell {
+  width:min(100%,420px);
+  padding: max(16px,env(safe-area-inset-top)) 18px max(12px,env(safe-area-inset-bottom))
 }
 
 header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1rem 2rem;
-  background: white;
-  border-bottom: 1px solid #dce1eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px
 }
 
-header a {
-  color: #284bc1;
-  text-underline-offset: 0.2em;
+.eyebrow {
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:2px;
+  margin:0 0 6px;
+  color:#a3c4bd
 }
 
-.brand {
-  color: #172033;
-  font-weight: 700;
-  text-decoration: none;
+h1 {
+  font-size:29px;
+  letter-spacing:-1.4px;
+  line-height:1;
+  margin:0;
+  font-weight:900
 }
 
-main {
-  align-self: center;
-  padding: 2rem;
-  text-align: center;
+h1 span {
+  color:#e6ee91;
+  margin-left:5px
+}
+
+.record {
+  text-align:center;
+  background:#ffffff09;
+  border:1px solid #ffffff18;
+  border-radius:14px;
+  padding:8px 16px;
+  font-size:9px;
+  letter-spacing:1.5px;
+  color:#abc8c1
+}
+
+.record strong {
+  display:block;
+  font-size:23px;
+  letter-spacing:0;
+  color:#e6ee91
+}
+
+
+.arena {
+  position:relative;
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid #ffffff25;
+  box-shadow:0 20px 60px #0004;
+  isolation:isolate
+}
+
+canvas {
+  display:block;
+  width:100%;
+  height:min(65svh,600px);
+  min-height:280px;
+  touch-action:none;
+  background:#a6ded7;
+  outline-offset:-5px
+}
+
+.score {
+  position:absolute;
+  top:22px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:46px;
+  font-weight:900;
+  color:white;
+  text-shadow:0 3px 0 #244b5944;
+  pointer-events:none
+}
+
+.overlay {
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  background:#13383b75;
+  backdrop-filter:blur(4px);
+  padding:25px
+}
+
+.overlay[hidden],button[hidden] {
+  display:none
+}
+
+.badge {
+  display:grid;
+  place-items:center;
+  width:58px;
+  height:58px;
+  margin-bottom:22px;
+  border-radius:20px;
+  background:#e6ee91;
+  color:#264a40;
+  font-size:34px;
+  box-shadow:0 6px 0 #0002
+}
+
+.overlay .eyebrow {
+  color:#e6ee91
+}
+
+h2 {
+  font-size:34px;
+  line-height:1.12;
+  letter-spacing:-1px;
+  margin:10px 0
+}
+
+.overlay p:not(.eyebrow) {
+  font-size:14px;
+  line-height:1.7;
+  color:#e2efea;
+  margin:10px 0 25px
 }
 
 button {
-  padding: 0.75rem 1.25rem;
-  border: 0;
-  border-radius: 0.5rem;
-  background: #284bc1;
-  color: white;
-  font: inherit;
-  cursor: pointer;
+  font:inherit;
+  cursor:pointer;
+  border:0
 }
 
-button:hover {
-  background: #1e3994;
+#start {
+  background:#e6ee91;
+  color:#233d35;
+  border-radius:14px;
+  font-weight:800;
+  padding:16px 26px;
+  min-height:52px;
+  box-shadow:0 4px 0 #a7b65d
 }
 
-button:focus-visible,
-a:focus-visible {
-  outline: 3px solid #172033;
-  outline-offset: 4px;
+#start span {
+  margin-left:24px
 }
 
-#result {
-  min-height: 1.5em;
+button:active {
+  transform:translateY(2px)
+}
+
+button:focus-visible,canvas:focus-visible {
+  outline:3px solid white;
+  outline-offset:-4px
+}
+
+.pause {
+  position:absolute;
+  right:14px;
+  top:16px;
+  width:44px;
+  height:44px;
+  border:1px solid #ffffff60;
+  border-radius:13px;
+  color:white;
+  background:#163e4566;
+  font-weight:900;
+  font-size:18px
+}
+
+footer {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  margin-top:16px;
+  font-size:11px;
+  color:#a3c4bd
+}
+
+.tap-icon {
+  display:inline-grid;
+  place-items:center;
+  width:22px;
+  height:22px;
+  border:1px solid #668982;
+  border-radius:7px;
+  color:#e6ee91
+}
+
+.sr-only {
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap
+}
+
+@media(max-width:350px) {
+  .game-shell {
+  padding-inline:10px
+}
+
+h1 {
+  font-size:25px
+}
+
+.desktop-hint {
+  display:none
+}
+
+h2 {
+  font-size:29px
+}
+
+
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .overlay {
+  backdrop-filter:none
+}
+
+
 }
