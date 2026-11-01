@@ -13,6 +13,7 @@
 
 body {
   margin:0;
+  min-height:100vh;
   min-height:100svh;
   display:grid;
   place-items:center;
@@ -21,6 +22,8 @@ body {
 
 
 .game-shell {
+  width:100%;
+  max-width:420px;
   width:min(100%,420px);
   padding: max(16px,env(safe-area-inset-top)) 18px max(12px,env(safe-area-inset-bottom))
 }
@@ -78,14 +81,17 @@ h1 span {
   overflow:hidden;
   border:1px solid #ffffff25;
   box-shadow:0 20px 60px #0004;
-  isolation:isolate
+  isolation:isolate;
+  touch-action:none;
+  -webkit-user-select:none;
+  user-select:none
 }
 
 canvas {
   display:block;
   width:100%;
-  height:min(65svh,600px);
-  min-height:280px;
+  height:auto;
+  aspect-ratio:3 / 5;
   touch-action:none;
   background:#a6ded7;
   outline-offset:-5px

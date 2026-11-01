@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#142f38">
     <title>Flappy Bird · Chạm để bay</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="./style.css?v=2">
+    <script src="./script.js?v=2" defer></script>
   </head>
   <body>
     <main class="game-shell">
@@ -14,18 +14,19 @@
         <div><p class="eyebrow">CHẠM NHẸ · BAY CAO</p><h1>Flappy<span>Bird</span></h1></div>
         <div class="record">KỶ LỤC<strong id="best">0</strong></div>
       </header>
-      <section class="arena" aria-label="Trò chơi Flappy Bird">
+      <section class="arena" id="arena" aria-label="Trò chơi Flappy Bird">
         <canvas id="game" width="360" height="600" tabindex="0" aria-label="Chạm hoặc nhấn phím cách để bay qua các ống"></canvas>
         <div class="score" id="score" aria-label="Điểm hiện tại">0</div>
         <div class="overlay" id="overlay">
           <div class="badge" aria-hidden="true">✦</div>
           <p class="eyebrow" id="label">SẴN SÀNG CẤT CÁNH?</p>
-          <h2 id="title">Một chạm.<br>Một chuyến bay.</h2>
+          <h2 id="title">Chạm để bay!</h2>
           <p id="message">Lách qua những chiếc ống.<br>Bay xa hơn mỗi lần thử.</p>
           <button id="start" type="button">Bắt đầu bay <span aria-hidden="true">↗</span></button>
         </div>
-        <button id="pause" class="pause" type="button" aria-label="Tạm dừng" hidden>Ⅱ</button>
+        <button id="pause" class="pause" type="button" aria-label="Tạm dừng" hidden>II</button>
       </section>
+      <noscript>Hãy bật JavaScript trong trình duyệt để chơi Flappy Bird.</noscript>
       <footer><span class="tap-icon" aria-hidden="true">↑</span> Chạm màn hình để bay <span class="desktop-hint">· hoặc phím Space</span></footer>
       <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
     </main>

@@ -1,17 +1,21 @@
 'use strict';
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+const arena = document.getElementById('arena');
 const ui = Object.fromEntries(['best', 'score', 'overlay', 'label', 'title', 'message', 'start', 'pause', 'announcement'].map(id => [id, document.getElementById(id)]));
 const W = 360, H = 600, floor = 548, birdX = 92, radius = 13, gap = 160, pipeWidth = 58;
 let best = 0;
-try { best = Math.max(0, Number(localStorage.getItem('flappy-best')) || 0); } catch { /* Storage is optional. */ }
+try {
+  const saved = Number(localStorage.getItem('flappy-best'));
+  best = Number.isFinite(saved) ? Math.max(0, Math.floor(saved)) : 0;
+} catch { /* Storage is optional. */ }
 ui.best.textContent = best;
 let state = 'ready', birdY = 255, velocity = 0, pipes = [], score = 0, spawn = 0, last = null;
 function start() {
   birdY = 255; velocity = -305; pipes = []; score = 0; spawn = 0.65;
   ui.score.textContent = '0'; state = 'playing'; last = null;
   ui.overlay.hidden = true; ui.pause.hidden = false;
-  ui.pause.textContent = 'Ⅱ'; ui.pause.setAttribute('aria-label', 'Tạm dừng');
+  ui.pause.textContent = 'II'; ui.pause.setAttribute('aria-label', 'Tạm dừng');
   canvas.focus({ preventScroll: true });
 }
 function end() {
@@ -28,21 +32,39 @@ function end() {
 function pause() {
   if (state !== 'playing' && state !== 'paused') return;
   state = state === 'playing' ? 'paused' : 'playing'; last = null;
-  ui.pause.textContent = state === 'paused' ? '▶' : 'Ⅱ';
+  ui.pause.textContent = state === 'paused' ? '▶' : 'II';
   ui.pause.setAttribute('aria-label', state === 'paused' ? 'Tiếp tục' : 'Tạm dừng');
   ui.label.textContent = 'NGHỈ MỘT NHỊP'; ui.title.textContent = 'Đã tạm dừng';
   ui.message.textContent = 'Chuyến bay sẽ tiếp tục khi bạn sẵn sàng.';
   ui.start.textContent = 'Tiếp tục ↗'; ui.overlay.hidden = state !== 'paused';
 }
 function flap() { if (state === 'playing') velocity = -305; }
+function interact() {
+  if (state === 'ready' || state === 'over') start();
+  else if (state === 'paused') pause();
+  else flap();
+}
 ui.start.addEventListener('click', () => state === 'paused' ? pause() : start());
 ui.pause.addEventListener('click', pause);
-canvas.addEventListener('pointerdown', event => { event.preventDefault(); flap(); });
+function handleInput(event) {
+  if (event.target.closest('button')) return;
+  if (event.type === 'pointerdown' && (!event.isPrimary || event.button > 0)) return;
+  event.preventDefault();
+  interact();
+}
+if ('PointerEvent' in window) {
+  arena.addEventListener('pointerdown', handleInput);
+} else {
+  arena.addEventListener('touchstart', handleInput, { passive: false });
+  arena.addEventListener('mousedown', event => {
+    if (!('ontouchstart' in window)) handleInput(event);
+  });
+}
 document.addEventListener('keydown', event => {
   if (event.target.tagName === 'BUTTON') return;
   if (event.code === 'Space' || event.code === 'ArrowUp') {
     event.preventDefault(); if (event.repeat) return;
-    if (state === 'ready' || state === 'over') start(); else if (state === 'paused') pause(); else flap();
+    interact();
   } else if (event.code === 'Escape') pause();
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden && state === 'playing') pause(); });
@@ -55,12 +77,12 @@ function update(dt) {
   }
   for (const pipe of pipes) {
     pipe.x -= 135 * dt;
-    const nearX = Math.max(pipe.x, Math.min(birdX, pipe.x + pipeWidth));
+    const nearX = Math.max(pipe.x - 4, Math.min(birdX, pipe.x + pipeWidth + 4));
     const dx = birdX - nearX;
     const topDy = Math.max(0, birdY - pipe.top);
     const bottomDy = Math.max(0, pipe.top + gap - birdY);
     if (dx * dx + topDy * topDy < radius * radius || dx * dx + bottomDy * bottomDy < radius * radius) { end(); return; }
-    if (!pipe.passed && pipe.x + pipeWidth < birdX - radius) {
+    if (!pipe.passed && pipe.x + pipeWidth + 4 < birdX - radius) {
       pipe.passed = true; score++; ui.score.textContent = score;
     }
   }
@@ -68,7 +90,21 @@ function update(dt) {
   if (birdY + radius >= floor || birdY - radius <= 0) end();
 }
 function roundRect(x, y, width, height, r, color) {
-  ctx.fillStyle = color; ctx.beginPath(); ctx.roundRect(x, y, width, height, r); ctx.fill();
+  // Use the original Canvas API, including on older mobile Safari.
+  r = Math.min(r, width / 2, height / 2);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + width - r, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+  ctx.lineTo(x + width, y + height - r);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+  ctx.lineTo(x + r, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+  ctx.fill();
 }
 function draw() {
   const sky = ctx.createLinearGradient(0, 0, 0, H); sky.addColorStop(0, '#8ed0cb'); sky.addColorStop(1, '#e0f0d3');
